@@ -4,3 +4,4 @@ version = "0.1.0"
 authors = ["Terkwood <metaterkhorn@gmail.com>"]
 
 [dependencies]
+midir = "0.5.0"
