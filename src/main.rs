@@ -52,14 +52,9 @@ fn run() -> Result<(), Box<Error>> {
             let _ = conn_out.send(&[NOTE_OFF_MSG, note, VELOCITY]);
         };
         
-        play_note(66, 4);
-        play_note(65, 3);
-        play_note(63, 1);
-        play_note(61, 6);
-        play_note(59, 2);
-        play_note(58, 4);
-        play_note(56, 4);
-        play_note(54, 4);
+        for i in 0..66 {
+            play_note(i, 2);
+        }
     }
     sleep(Duration::from_millis(150));
     println!("\nClosing connection");
