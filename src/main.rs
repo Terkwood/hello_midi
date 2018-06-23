@@ -186,29 +186,22 @@ fn run(notes: Vec<MidiNote>) -> Result<(), Box<Error>> {
     println!("Connection open. Listen!");
     {
         // Define a new scope in which the closure `play_note` borrows conn_out, so it can be called easily
-        let mut play_note = |note: u8, duration: u64| {
+        let mut play_note = |midi: MidiNote| {
             const NOTE_ON_MSG: u8 = 0x90;
             const NOTE_OFF_MSG: u8 = 0x80;
-            const VELOCITY: u8 = 0x64;
             // We're ignoring errors in here
-            let _ = conn_out.send(&[NOTE_ON_MSG, note, VELOCITY]);
-            sleep(Duration::from_millis(duration * 100));
-            let _ = conn_out.send(&[NOTE_OFF_MSG, note, VELOCITY]);
+            sleep(Duration::from_millis(midi.vtime * 10));
+
+            let _ = match midi.channel_note {
+                 ChannelNote::On(c) =>  conn_out.send(&[c, midi.note, midi.velocity]),
+                 ChannelNote::Off(c) => conn_out.send(&[c, midi.note, midi.velocity]),
+            };
+            
+            
         };
 
-        // play some notes
-        loop {
-            for i in 36..76 {
-                play_note(i, 4);
-
-                play_note(i + 7, 4);
-            }
-
-            for i in 76..36 {
-                play_note(i, 4);
-
-                play_note(i + 7, 4);
-            }
+        for n in notes {
+            play_note(n)
         }
     }
 
