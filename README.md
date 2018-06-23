@@ -10,9 +10,15 @@ We recommend downloading the JS Bach Goldberg Variations from https://www.opengo
 cargo run ~/Documents/Goldberg_Variations.mid
 ```
 
-## Mac Config
+## OS Configs
+
+### Mac OS X
 
 * Install SimpleSynth according to https://github.com/wbsoft/frescobaldi/wiki/MIDI-playback-on-Mac-OS-X
+
+### Raspbian
+
+Install `mplayer` to get going quickly with playing an mp3 file to a bluetooth speaker.
 
 ## MIDI sample data
 
