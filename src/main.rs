@@ -49,7 +49,9 @@ fn main() {
         None => panic!("Please pass a path to an SMF to test"),
     }[..];
 
-    let track_events = load_midi_file(pathstr);
+    let (track_events, microsec_per_quarter_note) = load_midi_file(pathstr);
+
+    println!("microsec per quarter note: {}", microsec_per_quarter_note);
 
     let timed_midi_messages = midi_messages_from(track_events);
 
@@ -61,12 +63,26 @@ fn main() {
     }
 }
 
-fn load_midi_file(pathstr: &str) -> Vec<TrackEvent> {
+fn load_midi_file(pathstr: &str) -> (Vec<TrackEvent>, u64) {
     let mut events: Vec<TrackEvent> = Vec::with_capacity(DEFAULT_VEC_CAPACITY);
+
+    let mut micros_per_qnote: Option<u64> = None;
+
     match SMF::from_file(&Path::new(&pathstr[..])) {
         Ok(smf) => {
             for track in smf.tracks.iter() {
                 for event in track.events.iter() {
+                    if let rimd::Event::Meta(rimd::MetaEvent {
+                        command: rimd::MetaCommand::TempoSetting,
+                        length: _,
+                        data: _,
+                    }) = event.event
+                    {
+                        // so meta
+
+                    }
+
+                    println!("  {:?}", event);
                     events.push(event.clone());
                 }
             }
@@ -86,7 +102,9 @@ fn load_midi_file(pathstr: &str) -> Vec<TrackEvent> {
             }
         },
     };
-    events
+
+    const DEFAULT_MICROS_PER_QNOTE: u64 = 888888888;
+    (events, micros_per_qnote.unwrap_or(DEFAULT_MICROS_PER_QNOTE))
 }
 
 #[derive(Debug)]
