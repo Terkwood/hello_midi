@@ -1,6 +1,6 @@
 # hello_midi
 
-Starter project for MIDI with rust.
+Uses [rimd](https://github.com/RustAudio/rimd) and [midir](https://github.com/Boddlnagg/midir) libs to read MIDI and play it. Tested on Mac OS X using [SimpleSynth](http://notahat.com/simplesynth/) and the public domain JS Bach Goldberg variations.
 
 ## Usage
 
@@ -48,6 +48,8 @@ We can see by reading http://www.onicos.com/staff/iz/formats/midi-event.html tha
 ## Notes on Midi Time Management
 
 MIDI Note On / Note Off events are ordered in time.  Each event contains a `delta_time` (vtime) field representing the time elapsed since the last event.
+
+In most cases, you can use the headers/metadata at the beginning of the file to establish a simple relationship between microseconds and "ticks" of the MIDI score.
 
 From `rimd` documentation in `meta.rs`:
 
