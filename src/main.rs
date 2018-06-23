@@ -212,7 +212,7 @@ fn run(notes: Vec<MidiNote>, micros_per_tick: u64) -> Result<(), Box<Error>> {
             0
         }
         _ => {
-            println!("\nAvailable output ports:");
+            /*println!("\nAvailable output ports:");
             for i in 0..midi_out.port_count() {
                 println!("{}: {}", i, midi_out.port_name(i).unwrap());
             }
@@ -220,7 +220,8 @@ fn run(notes: Vec<MidiNote>, micros_per_tick: u64) -> Result<(), Box<Error>> {
             stdout().flush()?;
             let mut input = String::new();
             stdin().read_line(&mut input)?;
-            input.trim().parse()?
+            input.trim().parse()?*/
+            0
         }
     };
 

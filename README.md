@@ -12,11 +12,32 @@ cargo run ~/Documents/Goldberg_Variations.mid
 
 We recommend listening to [Fredrik Johansson's MIDI repository](https://github.com/fredrik-johansson/midi), an excellent, extensive body of work!  Bravo!
 
-## OS Configs
+## Building on Raspbian
+
+You need to install `libsound2`.
+
+```sh
+sudo apt-get install libasound2-dev
+```
+
+At this point you can then build the `alsa` crate for rust on your Pi.
+
+## Misc OS Configs
 
 ### Mac OS X
 
 * Install SimpleSynth according to https://github.com/wbsoft/frescobaldi/wiki/MIDI-playback-on-Mac-OS-X
+
+### Raspbian
+
+#### Playing MIDI
+
+Hook up a speaker to your Pi, then:
+
+```sh
+sudo apt-get install wildmidi
+wildmidi Bach_Party.mid
+```
 
 ### Raspbian MIDI to mp3 conversion
 
