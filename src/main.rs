@@ -50,21 +50,14 @@ fn main() {
     }[..];
 
     let track_events = load_midi_file(pathstr);
-    println!("We have {} track events", track_events.len());
 
     let timed_midi_messages = midi_messages_from(track_events);
-    println!("We have {} timed midi messages", timed_midi_messages.len());
-
-    for i in 0..20 {
-        println!("\t{:?}", timed_midi_messages[i])
-    }
 
     let notes = notes_in_channel(timed_midi_messages);
 
-    println!("We have {} PlayNote instructions", notes.len());
-    for n in notes.iter() {
+    /*for n in notes.iter().take(10) {
         println!("\tvtime hex {:04X} ... {:?}", n.vtime, n);
-    }
+    }*/
 
     match run(notes) {
         Ok(_) => (),
@@ -187,17 +180,13 @@ fn run(notes: Vec<MidiNote>) -> Result<(), Box<Error>> {
     {
         // Define a new scope in which the closure `play_note` borrows conn_out, so it can be called easily
         let mut play_note = |midi: MidiNote| {
-            const NOTE_ON_MSG: u8 = 0x90;
-            const NOTE_OFF_MSG: u8 = 0x80;
             // We're ignoring errors in here
-            sleep(Duration::from_millis(midi.vtime * 10));
+            sleep(Duration::from_millis(midi.vtime * 2));
 
             let _ = match midi.channel_note {
-                 ChannelNote::On(c) =>  conn_out.send(&[c, midi.note, midi.velocity]),
-                 ChannelNote::Off(c) => conn_out.send(&[c, midi.note, midi.velocity]),
+                ChannelNote::On(c) => conn_out.send(&[c, midi.note, midi.velocity]),
+                ChannelNote::Off(c) => conn_out.send(&[c, midi.note, midi.velocity]),
             };
-            
-            
         };
 
         for n in notes {
