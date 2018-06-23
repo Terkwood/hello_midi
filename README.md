@@ -16,9 +16,19 @@ cargo run ~/Documents/Goldberg_Variations.mid
 
 * Install SimpleSynth according to https://github.com/wbsoft/frescobaldi/wiki/MIDI-playback-on-Mac-OS-X
 
-### Raspbian
+### Raspbian MIDI to mp3 conversion
 
 Install `mplayer` to get going quickly with playing an mp3 file to a bluetooth speaker.
+
+You can use a combination of `timidity` and `lame` to convert MIDI files to mp3.
+
+```sh
+sudo apt-get install mplayer timidity lame
+
+timidity MIDI_sample.mid -Ow -o - | lame - -b 64 sample.mp3
+
+mplayer sample.mp3
+```
 
 ## MIDI sample data
 
