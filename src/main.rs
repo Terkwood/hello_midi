@@ -63,23 +63,11 @@ fn main() {
 
 fn load_midi_file(pathstr: &str) -> Vec<TrackEvent> {
     let mut events: Vec<TrackEvent> = Vec::with_capacity(DEFAULT_VEC_CAPACITY);
-    let mut count: u16 = 0;
     match SMF::from_file(&Path::new(&pathstr[..])) {
         Ok(smf) => {
             for track in smf.tracks.iter() {
-                let mut time: u64 = 0;
                 for event in track.events.iter() {
-                    if count < 200 {
-                        // TODO remove
-                        count += 1;
-                        println!(
-                            "  vtime {} event {}",
-                            event.vtime,
-                            event.fmt_with_time_offset(time)
-                        );
-                    }
                     events.push(event.clone());
-                    time += event.vtime;
                 }
             }
         }
