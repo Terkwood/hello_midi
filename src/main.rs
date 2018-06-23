@@ -221,7 +221,7 @@ fn run(notes: Vec<MidiNote>, micros_per_tick: u64) -> Result<(), Box<Error>> {
             let mut input = String::new();
             stdin().read_line(&mut input)?;
             input.trim().parse()?*/
-            0
+            1
         }
     };
 
