@@ -55,10 +55,6 @@ fn main() {
 
     let notes = notes_in_channel(timed_midi_messages);
 
-    /*for n in notes.iter().take(10) {
-        println!("\tvtime hex {:04X} ... {:?}", n.vtime, n);
-    }*/
-
     match run(notes) {
         Ok(_) => (),
         Err(err) => println!("Error: {}", err.description()),
