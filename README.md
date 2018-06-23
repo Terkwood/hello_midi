@@ -61,6 +61,15 @@ events:
 
 We can see by reading http://www.onicos.com/staff/iz/formats/midi-event.html that most of these are "Channel 1 Note On".
 
+## Using SoundFlower to record MIDI
+
+Not strictly related to the build, but...
+
+This is helpful for redirecting your successful
+playback of MIDI to a sound file that you're recording.
+
+https://github.com/mattingalls/Soundflower/releases/tag/2.0b2
+
 ## Acknowledgements
 
 Bach's Goldberg Variations are [available under Creative Commons License here](https://www.opengoldbergvariations.org/).
