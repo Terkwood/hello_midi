@@ -72,10 +72,14 @@ fn load_midi_file(pathstr: &str) -> (Vec<TrackEvent>, u64) {
         Ok(smf) => {
             for track in smf.tracks.iter() {
                 for event in track.events.iter() {
+                    // figure out how many microsec are in a quarter note
+                    // available in header TempoSetting = 0x51
+                    // it's a three element array which you want to combine into
+                    // a single u64
                     if let rimd::Event::Meta(rimd::MetaEvent {
                         command: rimd::MetaCommand::TempoSetting,
                         length: _,
-                        data: _,
+                        data: ref micros_per_qnote_vec,
                     }) = event.event
                     {
                         // so meta
