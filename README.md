@@ -1,6 +1,6 @@
 # hello_midi
 
-Uses [rimd](https://github.com/RustAudio/rimd) and [midir](https://github.com/Boddlnagg/midir) libs to read MIDI and play it. Tested on Mac OS X using [SimpleSynth](http://notahat.com/simplesynth/) and the public domain JS Bach Goldberg variations.
+Uses [rtmidi](https://github.com/thestk/rtmidi), [rimd](https://github.com/RustAudio/rimd) and [midir](https://github.com/Boddlnagg/midir) libs to read MIDI and play it. Tested on Mac OS X using [SimpleSynth](http://notahat.com/simplesynth/) and the public domain JS Bach Goldberg variations.
 
 ## Usage
 
@@ -96,3 +96,7 @@ https://github.com/mattingalls/Soundflower/releases/tag/2.0b2
 Bach's Goldberg Variations are [available under Creative Commons License here](https://www.opengoldbergvariations.org/).
 
 Big thanks to [midir library](https://github.com/Boddlnagg/midir).
+
+Big thanks to [rimd library](https://github.com/RustAudio/rimd).
+
+Big thanks to [rtmidi library](https://github.com/thestk/rtmidi).
