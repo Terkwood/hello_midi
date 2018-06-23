@@ -39,6 +39,32 @@ sudo apt-get install wildmidi
 wildmidi Bach_Party.mid
 ```
 
+### Virtual MIDI
+
+From http://tldp.org/HOWTO/MIDI-HOWTO-10.html:
+
+The virmidi module has to be loaded to make the virtual MIDI ports available.
+
+```sh
+modprobe snd-virmidi snd_index=1
+```
+
+You should be able to see virtual MIDI available as a sound card:
+
+```sh
+$ cat /proc/asound/cards
+ 0 [ALSA           ]: bcm2835_alsa - bcm2835 ALSA
+                      bcm2835 ALSA
+ 1 [VirMIDI        ]: VirMIDI - VirMIDI
+                      Virtual MIDI Card 1
+```
+
+We tried installing `fluidsynth`:
+
+```sh
+sudo apt-get install fluidsynth -y
+```
+
 ### Raspbian MIDI to mp3 conversion
 
 Install `mplayer` to get going quickly with playing an mp3 file to a bluetooth speaker.
