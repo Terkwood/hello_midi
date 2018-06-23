@@ -3,7 +3,7 @@ extern crate rimd;
 
 use midir::MidiOutput;
 use rimd::{Event, SMFError, TrackEvent, SMF};
-use std::env::{args, Args};
+use std::env;
 use std::error::Error;
 use std::io::{stdin, stdout, Write};
 use std::path::Path;
@@ -42,12 +42,20 @@ pub struct MidiNote {
 }
 
 fn main() {
-    let mut args: Args = args();
+    let mut args: env::Args = env::args();
     args.next();
     let pathstr = &match args.next() {
         Some(s) => s,
         None => panic!("Please pass a path to an SMF to test"),
     }[..];
+
+    let output_device: &usize = &match args.next() {
+        Some(n) => {
+            println!("User requested output device {}", n);
+            str::parse(&n)
+        }.unwrap_or(0),
+        None => 0,
+    };
 
     let (track_events, time_info) = load_midi_file(pathstr);
 
@@ -57,7 +65,7 @@ fn main() {
 
     let notes = notes_in_channel(timed_midi_messages);
 
-    match run(notes, time_info.micros_per_clock()) {
+    match run(*output_device, notes, time_info.micros_per_clock()) {
         Ok(_) => (),
         Err(err) => println!("Error: {}", err.description()),
     }
@@ -83,8 +91,7 @@ impl MidiTimeInfo {
         // SO, THIS IS A ROUGH ESTIMATE
         // ...and if `num_32nd_notes_per_24_ticks` is set in your MIDI file,
         // ...you should do more arithmetic.
-        (self.micros_per_qnote as f32 / 32 as f32 / 12 as f32)
-            as u64
+        (self.micros_per_qnote as f32 / 32 as f32 / 12 as f32) as u64
     }
 }
 
@@ -198,11 +205,11 @@ fn notes_in_channel(midi_messages: Vec<TimedMidiMessage>) -> Vec<MidiNote> {
     notes
 }
 
-fn run(notes: Vec<MidiNote>, micros_per_tick: u64) -> Result<(), Box<Error>> {
+fn run(output_device: usize, notes: Vec<MidiNote>, micros_per_tick: u64) -> Result<(), Box<Error>> {
     let midi_out = MidiOutput::new("Hello MIDI Bach Magic Machine")?;
 
     // Get an output port (read from console if multiple are available)
-    let out_port = match midi_out.port_count() {
+    /*let out_port = match midi_out.port_count() {
         0 => return Err("no output port found".into()),
         1 => {
             println!(
@@ -212,7 +219,8 @@ fn run(notes: Vec<MidiNote>, micros_per_tick: u64) -> Result<(), Box<Error>> {
             0
         }
         _ => {
-            /*println!("\nAvailable output ports:");
+            
+            println!("\nAvailable output ports:");
             for i in 0..midi_out.port_count() {
                 println!("{}: {}", i, midi_out.port_name(i).unwrap());
             }
@@ -220,13 +228,13 @@ fn run(notes: Vec<MidiNote>, micros_per_tick: u64) -> Result<(), Box<Error>> {
             stdout().flush()?;
             let mut input = String::new();
             stdin().read_line(&mut input)?;
-            input.trim().parse()?*/
-            1
+            input.trim().parse()?
+            
         }
-    };
+    };*/
 
     println!("\nOpening connection");
-    let mut conn_out = midi_out.connect(out_port, "midir-test")?;
+    let mut conn_out = midi_out.connect(output_device, "midir-test")?;
     println!("Connection open. Listen!");
     {
         // Define a new scope in which the closure `play_note` borrows conn_out, so it can be called easily
