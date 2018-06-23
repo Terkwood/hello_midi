@@ -10,6 +10,8 @@ We recommend downloading the JS Bach Goldberg Variations from https://www.opengo
 cargo run ~/Documents/Goldberg_Variations.mid
 ```
 
+We recommend listening to [Fredrik Johansson's MIDI repository](https://github.com/fredrik-johansson/midi), an excellent, extensive body of work!  Bravo!
+
 ## OS Configs
 
 ### Mac OS X
