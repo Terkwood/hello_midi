@@ -48,7 +48,7 @@ Key insight:  you need to start `fluidsynth` as a server, allow MIDI input, conn
 ```sh
 fluidsynth -a alsa -i /usr/share/sounds/sf2/FluidR3_GM.sf2 --server
 aconnect -lio   #  and COUNT the number of MIDI related devices
-cargo run ~/Goldberg_Variations.mid 5  # you probably have 4 midi devices plus your virtual (fluidsynth)
+cargo run ~/Goldberg_Variations.mid 1  # if fluidsynth is the only virtual midi device on your pi, it should have ID 1.  see `aconnect -lio`
 ```
 
 Helper command -- play a midi file to your speaker using `fluidsynth`:
@@ -67,16 +67,6 @@ See sound cards:
 
 ```sh
 aplay -l
-```
-
-See virtual MIDI available as a sound card:
-
-```sh
-$ cat /proc/asound/cards
- 0 [ALSA           ]: bcm2835_alsa - bcm2835 ALSA
-                      bcm2835 ALSA
- 1 [VirMIDI        ]: VirMIDI - VirMIDI
-                      Virtual MIDI Card 1
 ```
 
 ### Raspbian MIDI to mp3 conversion
