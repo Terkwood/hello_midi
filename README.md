@@ -169,3 +169,5 @@ Big thanks to [midir library](https://github.com/Boddlnagg/midir).
 Big thanks to [rimd library](https://github.com/RustAudio/rimd).
 
 Big thanks to [rtmidi library](https://github.com/thestk/rtmidi).
+
+Thank you to [fluidsynth](http://www.fluidsynth.org/), which allowed us to send MIDI output to our audio device.
