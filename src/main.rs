@@ -5,7 +5,6 @@ use midir::MidiOutput;
 use rimd::{Event, SMFError, TrackEvent, SMF};
 use std::env;
 use std::error::Error;
-use std::io::{stdin, stdout, Write};
 use std::path::Path;
 use std::thread::sleep;
 use std::time::Duration;
@@ -49,17 +48,22 @@ fn main() {
         None => panic!("Please pass a path to an SMF to test"),
     }[..];
 
+    const DEFAULT_OUTPUT_DEVICE: usize = 1;
     let output_device: &usize = &match args.next() {
         Some(n) => {
             println!("User requested output device {}", n);
             str::parse(&n)
         }.unwrap_or(0),
-        None => 0,
+        None => {
+            println!(
+                "No output device specified, defaulting to {}",
+                DEFAULT_OUTPUT_DEVICE
+            );
+            DEFAULT_OUTPUT_DEVICE
+        }
     };
 
     let (track_events, time_info) = load_midi_file(pathstr);
-
-    println!("microsec per quarter note: {}", time_info.micros_per_qnote);
 
     let timed_midi_messages = midi_messages_from(track_events);
 
@@ -71,8 +75,12 @@ fn main() {
     }
 }
 
+/// An important question to ask:
+/// How many ticks are in a Quarter Note?
+///
+/// The Short answer:  Usually 24
+/// The Long answer:   It varies based on num_32nd_notes_per_24_ticks    
 pub struct MidiTimeInfo {
-    // 1 Quarter Note = ??? Ticks
     pub micros_per_qnote: u64,
     pub num_32nd_notes_per_24_ticks: u8, // usually 8
     pub clocks_per_tick: u8,             // usually 24
@@ -122,11 +130,6 @@ fn load_midi_file(pathstr: &str) -> (Vec<TrackEvent>, MidiTimeInfo) {
                         ref data,
                     }) = event.event
                     {
-                        /*"Time Signature: {}/{}, {} ticks/metronome click, {} 32nd notes/quarter note",
-                                                         self.data[0],
-                                                         2usize.pow(self.data[1] as u32),
-                                                         self.data[2],
-                                                         self.data[3]*/
                         clocks_per_tick = data[2];
                         num_32nd_notes_per_24_clocks = data[3];
                     }
@@ -206,36 +209,10 @@ fn notes_in_channel(midi_messages: Vec<TimedMidiMessage>) -> Vec<MidiNote> {
 }
 
 fn run(output_device: usize, notes: Vec<MidiNote>, micros_per_tick: u64) -> Result<(), Box<Error>> {
-    let midi_out = MidiOutput::new("Hello MIDI Bach Magic Machine")?;
+    let midi_out = MidiOutput::new("MIDI Magic Machine")?;
 
-    // Get an output port (read from console if multiple are available)
-    /*let out_port = match midi_out.port_count() {
-        0 => return Err("no output port found".into()),
-        1 => {
-            println!(
-                "Choosing the only available output port: {}",
-                midi_out.port_name(0).unwrap()
-            );
-            0
-        }
-        _ => {
-            
-            println!("\nAvailable output ports:");
-            for i in 0..midi_out.port_count() {
-                println!("{}: {}", i, midi_out.port_name(i).unwrap());
-            }
-            print!("Please select output port: ");
-            stdout().flush()?;
-            let mut input = String::new();
-            stdin().read_line(&mut input)?;
-            input.trim().parse()?
-            
-        }
-    };*/
-
-    println!("\nOpening connection");
-    let mut conn_out = midi_out.connect(output_device, "midir-test")?;
-    println!("Connection open. Listen!");
+    let mut conn_out = midi_out.connect(output_device, "led_midi_show")?;
+    println!("[ [ Show Starts Now ] ]");
     {
         // Define a new scope in which the closure `play_note` borrows conn_out, so it can be called easily
         let mut play_note = |midi: MidiNote| {
@@ -252,10 +229,8 @@ fn run(output_device: usize, notes: Vec<MidiNote>, micros_per_tick: u64) -> Resu
         }
     }
 
-    println!("\nClosing connection");
     // This is optional, the connection would automatically be closed as soon as it goes out of scope
     conn_out.close();
-    println!("Connection closed");
     Ok(())
 }
 
