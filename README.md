@@ -41,15 +41,35 @@ wildmidi Bach_Party.mid
 
 ### Virtual MIDI
 
-From http://tldp.org/HOWTO/MIDI-HOWTO-10.html:
+Required reading: http://sandsoftwaresound.net/qsynth-fluidsynth-raspberry-pi/
 
-The virmidi module has to be loaded to make the virtual MIDI ports available.
+Key insight:  you need to start `fluidsynth` as a server, allow MIDI input, connect it to your ALSA sound device on the Pi, and then correctly select the device number when starting this application:
 
 ```sh
-modprobe snd-virmidi snd_index=1
+fluidsynth -a alsa -i /usr/share/sounds/sf2/FluidR3_GM.sf2 --server
+aconnect -lio   #  and COUNT the number of MIDI related devices
+cargo run ~/Goldberg_Variations.mid 5  # you probably have 4 midi devices plus your virtual (fluidsynth)
 ```
 
-You should be able to see virtual MIDI available as a sound card:
+Helper command -- play a midi file to your speaker using `fluidsynth`:
+
+```sh
+fluidsynth -a alsa -n -i /usr/share/sounds/sf2/FluidR3_GM.sf ~/Goldberg_Variations.mid
+```
+
+See MIDI devices:
+
+```sh
+aconnect -lio
+```
+
+See sound cards:
+
+```sh
+aplay -l
+```
+
+See virtual MIDI available as a sound card:
 
 ```sh
 $ cat /proc/asound/cards
@@ -57,12 +77,6 @@ $ cat /proc/asound/cards
                       bcm2835 ALSA
  1 [VirMIDI        ]: VirMIDI - VirMIDI
                       Virtual MIDI Card 1
-```
-
-We tried installing `fluidsynth`:
-
-```sh
-sudo apt-get install fluidsynth -y
 ```
 
 ### Raspbian MIDI to mp3 conversion
