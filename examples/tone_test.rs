@@ -4,13 +4,11 @@ extern crate rimd;
 use midir::MidiOutput;
 
 use std::env::args;
-use std::io::{stdin, stdout};
+use std::io::stdin;
 use std::thread;
 use std::time::Duration;
 
 pub fn main() {
-    const DEFAULT_OUTPUT_DEVICE: usize = 1;
-
     let notes: Vec<u8> = args().skip(1).map(|n| str::parse(&n).unwrap()).collect();
 
     let midi_out = MidiOutput::new("Tone Test").unwrap();
@@ -44,7 +42,7 @@ pub fn main() {
     const VELOCITY: u8 = 80;
 
     for n in notes {
-        conn_out.send(&[NOTE_ON_CHANNEL, n, VELOCITY]);
+        conn_out.send(&[NOTE_ON_CHANNEL, n, VELOCITY]).unwrap();
 
         thread::sleep(Duration::from_secs(1));
     }
