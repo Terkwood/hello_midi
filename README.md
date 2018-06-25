@@ -10,9 +10,78 @@ We recommend downloading the JS Bach Goldberg Variations from https://www.opengo
 cargo run ~/Documents/Goldberg_Variations.mid
 ```
 
-## Mac Config
+We recommend listening to [Fredrik Johansson's MIDI repository](https://github.com/fredrik-johansson/midi), an excellent, extensive body of work!  Bravo!
+
+## Building on Raspbian
+
+You need to install `libsound2`.
+
+```sh
+sudo apt-get install libasound2-dev
+```
+
+At this point you can then build the `alsa` crate for rust on your Pi.
+
+## Misc OS Configs
+
+### Mac OS X
 
 * Install SimpleSynth according to https://github.com/wbsoft/frescobaldi/wiki/MIDI-playback-on-Mac-OS-X
+
+### Raspbian
+
+#### Playing MIDI
+
+Hook up a speaker to your Pi, then:
+
+```sh
+sudo apt-get install wildmidi
+wildmidi Bach_Party.mid
+```
+
+### Virtual MIDI
+
+Required reading: http://sandsoftwaresound.net/qsynth-fluidsynth-raspberry-pi/
+
+Key insight:  you need to start `fluidsynth` as a server, allow MIDI input, connect it to your ALSA sound device on the Pi, and then correctly select the device number when starting this application:
+
+```sh
+fluidsynth -a alsa -i /usr/share/sounds/sf2/FluidR3_GM.sf2 --server
+aconnect -lio   #  and COUNT the number of MIDI related devices
+cargo run ~/Goldberg_Variations.mid 1  # if fluidsynth is the only virtual midi device on your pi, it should have ID 1.  see `aconnect -lio`
+```
+
+Helper command -- play a midi file to your speaker using `fluidsynth`:
+
+```sh
+fluidsynth -a alsa -n -i /usr/share/sounds/sf2/FluidR3_GM.sf ~/Goldberg_Variations.mid
+```
+
+See MIDI devices:
+
+```sh
+aconnect -lio
+```
+
+See sound cards:
+
+```sh
+aplay -l
+```
+
+### Raspbian MIDI to mp3 conversion
+
+Install `mplayer` to get going quickly with playing an mp3 file to a bluetooth speaker.
+
+You can use a combination of `timidity` and `lame` to convert MIDI files to mp3.
+
+```sh
+sudo apt-get install mplayer timidity lame
+
+timidity MIDI_sample.mid -Ow -o - | lame - -b 64 sample.mp3
+
+mplayer sample.mp3
+```
 
 ## MIDI sample data
 
@@ -100,3 +169,5 @@ Big thanks to [midir library](https://github.com/Boddlnagg/midir).
 Big thanks to [rimd library](https://github.com/RustAudio/rimd).
 
 Big thanks to [rtmidi library](https://github.com/thestk/rtmidi).
+
+Thank you to [fluidsynth](http://www.fluidsynth.org/), which allowed us to send MIDI output to our audio device.
